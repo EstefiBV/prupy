@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>Registro de usuario</h2>
+
+    <form method="post" action="{{ url_for('acceso.procesar_registro') }}" class="form">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ nombre if nombre else '' }}" required>
+
+        <label for="correo">Correo:</label>
+        <input type="email" id="correo" name="correo" value="{{ correo if correo else '' }}" required>
+
+        <label for="clave">Contraseña:</label>
+        <input type="password" id="clave" name="clave" required>
+
+        <label for="rol">Rol:</label>
+        <select id="rol" name="rol">
+            <option value="empleado" {% if rol=='empleado' %}selected{% endif %}>Empleado</option>
+            <option value="supervisor" {% if rol=='supervisor' %}selected{% endif %}>Supervisor</option>
+            <option value="admin" {% if rol=='admin' %}selected{% endif %}>Administrador</option>
+        </select>
+
+        <button type="submit">Registrar usuario</button>
+    </form>
+
+    <a href="{{ url_for('acceso.index') }}" class="link">Volver al inicio</a>
+</section>
+{% endblock %}

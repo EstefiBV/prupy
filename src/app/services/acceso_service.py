@@ -1,24 +1,32 @@
-from app.models.acceso_model import USUARIOS_PERMITIDOS, BLOQUEADOS
+from app.models.acceso_model import existe_usuario_por_correo, registrar_usuario
 
-def normalizar_nombre(nombre: str) -> str:
-    # Limpia espacios y normaliza para evitar errores por entradas raras
-    return (nombre or "").strip()
+def normalizar_texto(texto: str) -> str:
+    return (texto or "").strip()
 
-def validar_acceso(nombre: str) -> tuple[bool, str]:
-    """
-    Retorna:
-    - permitido (bool)
-    - mensaje (str)
-    """
-    nombre = normalizar_nombre(nombre)
+def validar_datos_registro(nombre: str, correo: str, clave: str) -> tuple[bool, str]:
+    nombre = normalizar_texto(nombre)
+    correo = normalizar_texto(correo)
+    clave = normalizar_texto(clave)
 
     if nombre == "":
-        return False, "Debe ingresar un nombre"
+        return False, "Debe ingresar el nombre"
 
-    if nombre in BLOQUEADOS:
-        return False, "Usuario bloqueado"
+    if correo == "":
+        return False, "Debe ingresar el correo"
 
-    if nombre in USUARIOS_PERMITIDOS:
-        return True, "Acceso permitido"
+    if clave == "":
+        return False, "Debe ingresar la contraseña"
 
-    return False, "Usuario no registrado"
+    if existe_usuario_por_correo(correo):
+        return False, "Ya existe un usuario registrado con ese correo"
+
+    return True, "Datos válidos"
+
+def crear_usuario(nombre: str, correo: str, clave: str, rol: str = "empleado") -> tuple[bool, str]:
+    valido, mensaje = validar_datos_registro(nombre, correo, clave)
+
+    if not valido:
+        return False, mensaje
+
+    registrar_usuario(nombre, correo, clave, rol)
+    return True, "Usuario registrado correctamente"
