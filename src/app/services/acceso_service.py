@@ -1,0 +1,24 @@
+from app.models.acceso_model import USUARIOS_PERMITIDOS, BLOQUEADOS
+
+def normalizar_nombre(nombre: str) -> str:
+    # Limpia espacios y normaliza para evitar errores por entradas raras
+    return (nombre or "").strip()
+
+def validar_acceso(nombre: str) -> tuple[bool, str]:
+    """
+    Retorna:
+    - permitido (bool)
+    - mensaje (str)
+    """
+    nombre = normalizar_nombre(nombre)
+
+    if nombre == "":
+        return False, "Debe ingresar un nombre"
+
+    if nombre in BLOQUEADOS:
+        return False, "Usuario bloqueado"
+
+    if nombre in USUARIOS_PERMITIDOS:
+        return True, "Acceso permitido"
+
+    return False, "Usuario no registrado"
